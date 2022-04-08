@@ -1,79 +1,93 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
 import './Register.css'
 
 const Register = ({ btn }) => {
     const navigate = useNavigate();
-    
+
     const [user, setUser] = useState('')
 
-    const [email, setEmail] = useState({value: '', error: ''});
-  
+    const [name, setName] = useState('');
 
-    const [password, setPassword] = useState({value: '', error: ''});
-    const [confirmPassword, setConfirmPassword] = useState({value: '', error: ''});
-    console.log(confirmPassword)
+    const [email, setEmail] = useState({ value: '', error: '' });
+
+
+    const [password, setPassword] = useState({ value: '', error: '' });
+    const [confirmPassword, setConfirmPassword] = useState({ value: '', error: '' });
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(email.value === ''){
-            setEmail({value: '', error: 'Email is required'})
+        if (email.value === '') {
+            setEmail({ value: '', error: 'Email is required' })
         }
-        if(password.value === ''){
-            setPassword({value: '', error: 'Password is required'})
+        if (password.value === '') {
+            setPassword({ value: '', error: 'Password is required' })
         }
 
 
-        if(email.value && password.value && confirmPassword.value === password.value){
-        createUserWithEmailAndPassword(auth, email.value, password.value)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                // setUser(user)
-                navigate('/dashboard')
- 
-            })
-            .catch((error) => {
-                console.error(error)
+        if (email.value && password.value && confirmPassword.value === password.value) {
+            createUserWithEmailAndPassword(auth, email.value, password.value, name)
+
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    // setUser(user)
               
-            });
+                    sendEmailVerification(auth.currentUser)
+                        .then(() => {
+                            // Email verification sent!
+                            toast.success('Email verification sent!')
+                        });
+                        navigate('/dashboard')
+
+                })
+                .catch((error) => {
+                    console.error(error)
+
+                });
         }
+
+
+
 
     }
 
     const getUserName = (event) => {
         const name = event.target.value;
+        setName(name)
 
     }
 
     const getUserEmail = (event) => {
         const email = event.target.value;
-        if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
-            
-            setEmail({value: email, error: ''})
-        } else{
-            setEmail({value: '', error: 'Please enter a valid email'})
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+
+            setEmail({ value: email, error: '' })
+        } else {
+            setEmail({ value: '', error: 'Please enter a valid email' })
         }
     }
 
     const getUserPassword = (event) => {
         const password = event.target.value;
-        if( /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(password) ){
-            setPassword({value: password, error: ''})
+        if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(password)) {
+            setPassword({ value: password, error: '' })
 
-        }else{
-            setPassword({value: '', error: 'Minimum eight characters, at least one uppercase, one lowercase letter and one number'})
+        } else {
+            setPassword({ value: '', error: 'Minimum eight characters, at least one uppercase, one lowercase letter and one number' })
         }
     }
     const getConfirmedPassword = (event) => {
         const confirmPass = event.target.value;
-        if(password.value === confirmPass){
-            setConfirmPassword({value: confirmPass, error: ''});
-        }else{
+        if (password.value === confirmPass) {
+            setConfirmPassword({ value: confirmPass, error: '' });
+        } else {
 
-            setConfirmPassword({value: '', error: 'Password dont match'});
+            setConfirmPassword({ value: '', error: 'Password dont match' });
         }
     }
     return (
