@@ -1,26 +1,39 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
 import './Login.css'
 
 const Login = () => {
+    const navigate = useNavigate()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    console.log(email)
-    console.log(password)
+
 
     const handleLogin = (event) => {
         event.preventDefault();
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in 
+ 
                 const user = userCredential.user;
-                // ...
+                navigate('/dashboard')
+   
             })
             .catch((error) => {
-                console.error(error, 'User is not registered')
+                const errorMessage = error.message;
+                console.log(errorMessage)
+                if(errorMessage.includes('user-not-found')){
+                    toast.error('User not found',  {id: 'error'})
+                } else if(errorMessage.includes('wrong-password')){
+                    toast.error('Wrong password')
+                }
+                else{
+                    toast.error('An error happen while loging in.')
+                }
+                
             });
     }
 

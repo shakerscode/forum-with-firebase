@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 const provider = new GoogleAuthProvider();
 
 const Forum = () => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [forum, setFourm] = useState(false)
     
     const handleLogin = () => {
@@ -28,11 +28,12 @@ const Forum = () => {
         signInWithPopup(auth, provider)
             .then((result) => {
                 const user = result.user;
+                navigate('/dashboard');
                 console.log(user)
             }).catch((error) => {
                 console.error(error)
             });
-            // navigate('/dashboard')
+            
     }
     const gitHubSignIn = () => {
         console.log('clicked git')

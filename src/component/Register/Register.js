@@ -1,10 +1,12 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
 import './Register.css'
 
 const Register = ({ btn }) => {
+    const navigate = useNavigate();
     
     const [user, setUser] = useState('')
 
@@ -30,6 +32,7 @@ const Register = ({ btn }) => {
             .then((userCredential) => {
                 const user = userCredential.user;
                 // setUser(user)
+                navigate('/dashboard')
  
             })
             .catch((error) => {

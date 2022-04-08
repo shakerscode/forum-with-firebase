@@ -1,6 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import { Toaster } from 'react-hot-toast';
+
  
 import Dashbord from './component/Dashbord/Dashbord';
 import Forum from './component/Forum/Forum';
@@ -15,6 +17,7 @@ function App() {
   return (
     <div className='main-section'>
        <Header></Header>
+       <Toaster></Toaster>
       <Routes>
         <Route path='/' element={<Home></Home>}></Route>
         <Route path='/home' element={<Home></Home>}></Route>
