@@ -7,6 +7,7 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import Login from '../Login/Login';
 import auth from '../../firebase.init';
 import Register from '../Register/Register';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -14,14 +15,13 @@ import Register from '../Register/Register';
 const provider = new GoogleAuthProvider();
 
 const Forum = () => {
+    // const navigate = useNavigate();
     const [forum, setFourm] = useState(false)
-
+    
     const handleLogin = () => {
-        console.log('clicked login')
         setFourm(false)
     }
     const handleRegister = () => {
-        console.log('clicked Register')
         setFourm(true)
     }
     const googleSignIn = () => {
@@ -32,6 +32,7 @@ const Forum = () => {
             }).catch((error) => {
                 console.error(error)
             });
+            // navigate('/dashboard')
     }
     const gitHubSignIn = () => {
         console.log('clicked git')
