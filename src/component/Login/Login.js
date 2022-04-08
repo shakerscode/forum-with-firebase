@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import toast from 'react-hot-toast';
@@ -17,23 +17,26 @@ const Login = () => {
         event.preventDefault();
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
- 
+
                 const user = userCredential.user;
                 navigate('/dashboard')
-   
+
             })
             .catch((error) => {
                 const errorMessage = error.message;
                 console.log(errorMessage)
-                if(errorMessage.includes('user-not-found')){
-                    toast.error('User not found',  {id: 'error'})
-                } else if(errorMessage.includes('wrong-password')){
+                if (errorMessage.includes('user-not-found')) {
+                    toast.error('User not found', { id: 'error' })
+                } else if (errorMessage.includes('wrong-password')) {
                     toast.error('Wrong password')
                 }
-                else{
-                    toast.error('An error happen while loging in.')
+                 else if (errorMessage.includes('missing-email')) {
+                    toast.error('Missing-email')
                 }
-                
+                else {
+                    toast.error('An error happen while log in.')
+                }
+
             });
     }
 
@@ -42,6 +45,14 @@ const Login = () => {
     }
     const getPassword = (event) => {
         setPassword(event.target.value)
+    }
+    const handleForget = () => {
+        sendPasswordResetEmail(auth, email)
+            .then(() => {
+                // Password reset email sent!
+                // ..
+                toast.success('Password reset email sent!')
+            })
     }
 
     return (
@@ -57,6 +68,7 @@ const Login = () => {
                         <Form.Label>Password</Form.Label>
                         <Form.Control onBlur={getPassword} type="password" placeholder="Password" />
                     </Form.Group>
+                    <p onClick={handleForget} className='text-info text-decoration-underline cursor-class'>Forget password?</p>
                     <Form.Group className="mb-3" id="formGridCheckbox">
                         <Form.Check type="checkbox" label="Remember password" />
                     </Form.Group>
