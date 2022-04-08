@@ -6,6 +6,10 @@
   height: 40vmin;
   pointer-events: none;
 }
+.google-login img{
+  border-radius: 50%;
+  height: 80px;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
